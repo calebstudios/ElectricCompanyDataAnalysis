@@ -28,3 +28,15 @@ liander_2020_aggregate <- liander_2020 %>%
   group_by(city, zipcode_from, zipcode_to) %>% 
   summarise(TotalAnnualConsume = sum(annual_consume), 
             AvgSmartMeterPerc = mean(smartmeter_perc))
+
+# Daily sums of energy consumption aggregated for KAG_energydata_complete
+KAG_energy_daily_sum <- KAG_energydata_complete %>% 
+  group_by(date) %>% 
+  summarise(DailyApplianceUse = sum(Appliances))
+
+# Aggregation for hourly data
+hourly_merged <- inner_join(AEP_hourly, PJME_hourly, by = c("Date", "Hour"), 
+                            suffix = c("_AEP", "_PJME")) %>% 
+  inner_join(PJMW_hourly, by - c("Date", "Hour")) %>% 
+  mutate(HourlyAvg = (
+    Consumption_AEP + Consumption_PJME + Consumption_PJMW) / 3)
